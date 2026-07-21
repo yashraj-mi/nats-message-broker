@@ -1,7 +1,6 @@
 import asyncio
 import nats
 
-
 SERVER_LIST=[
             "nats://localhost:4222",
             "nats://localhost:4223",
@@ -28,7 +27,7 @@ async def main()->None:
         reconnected_cb=reconnected_cb,
         closed_cb=closed_cb,
         error_cb=error_cb,
-        reconnect_time_wait=2,
+        reconnect_time_wait=1,
         max_reconnect_attempts=4,
     )
 
@@ -36,7 +35,9 @@ async def main()->None:
 
     while True:
         await asyncio.sleep(5)
-        print("Current server:", nc.connected_url.netloc)
 
+        if nc.is_connected:
+            print("Current server:", nc.connected_url.netloc)
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
