@@ -44,7 +44,7 @@ async def main():
     nc,js=await get_js_client()
 
     try:
-        await publish_many(js, count=50)
+        await publish_many(js, count=20)
     except NatsTimeoutError:
         print("Publish timed out — stream may be unreachable or overloaded")
     finally:

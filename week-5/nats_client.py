@@ -60,8 +60,8 @@ async def get_js_client():
 
     nc = await nats.connect(
         NATS_URL,
-        reconnect_time_wait=2,        # seconds to wait between reconnect attempts
-        max_reconnect_attempts=-1,     # -1 = retry forever, never give up
+        reconnect_time_wait=2,
+        max_reconnect_attempts=-1,
         error_cb=error_cb,
         disconnected_cb=disconnected_cb,
         reconnected_cb=reconnected_cb,
