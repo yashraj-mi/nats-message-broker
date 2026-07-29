@@ -50,16 +50,18 @@ async def main():
         Exception:
             For any unexpected errors encountered during execution.
     """
-    nc = await nats.connect(
-        servers=["nats://localhost:4222"],
-        disconnected_cb=disconnected_cb,
-        reconnected_cb=reconnected_cb,
-        closed_cb=closed_cb,
-        error_cb=error_cb,
-    )
-    await nc.flush()
-
     try:
+
+        nc = await nats.connect(
+            servers=["nats://localhost:4222"],
+            disconnected_cb=disconnected_cb,
+            reconnected_cb=reconnected_cb,
+            closed_cb=closed_cb,
+            error_cb=error_cb,
+        )
+        await nc.flush()
+
+
         payload = {
             "email": "yashraj@gmail.com",
         }
@@ -94,8 +96,9 @@ async def main():
         logger.exception("Unexpected error while sending request.")
 
     finally:
-        logger.info("Draining NATS connection...")
-        await nc.drain()
+        if nc is not None and not nc.is_closed:
+            logger.info("Draining NATS connection...")
+            await nc.drain()
         logger.info("Shutdown complete.")
 
 
