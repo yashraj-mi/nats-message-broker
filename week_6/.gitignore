@@ -1,0 +1,31 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# IDE settings
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# NATS authentication secrets
+*.creds
+*.nk
+
+# TLS certificates and private keys
+*.pem
+*.key
+*.csr
+
+# JWT files
+*.jwt
