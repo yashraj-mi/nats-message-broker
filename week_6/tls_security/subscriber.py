@@ -38,19 +38,19 @@ def create_ssl_context() -> ssl.SSLContext:
         FileNotFoundError:
             If any required TLS certificate or key file is missing.
     """
-    required_files = (
-        CA_CERT,
-        CLIENT_CERT,
-        CLIENT_KEY,
-    )
+    
 
-    for file in required_files:
-        if not file.exists():
-            raise FileNotFoundError(f"TLS file not found: {file}")
-
-    ssl_context = ssl.create_default_context(
-        cafile=str(CA_CERT),
-    )
+    # ssl_context = ssl.create_default_context(
+    #     cafile=str(CA_CERT),
+    # )   (Instead of this use installed certificate and default context will automatic use installed certificate as below)
+    
+    # 1. Automatically loads the  installed ca.crt from the Linux system store
+    ssl_context = ssl.create_default_context()
+    
+        # 2. Keep these local as files, as Python on Linux cannot fetch 
+        # client private keys out of a system-wide store natively.
+    if not CLIENT_CERT.exists() or not CLIENT_KEY.exists():
+        raise FileNotFoundError("Client certificate or key file is missing.")
 
     ssl_context.load_cert_chain(
         certfile=str(CLIENT_CERT),

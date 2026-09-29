@@ -27,28 +27,16 @@ CLIENT_KEY = TLS_DIR / "client-key.pem"
 
 def create_ssl_context() -> ssl.SSLContext:
     """
-    Create and configure an SSL context for TLS authentication.
-
-    Returns:
-        Configured SSL context.
-
-    Raises:
-        FileNotFoundError:
-            If any required TLS certificate or key file is missing.
+    Creates an SSL context. Server validation uses the Linux system store,
+    while client identity is loaded from local files.
     """
-    required_files = (
-        CA_CERT,
-        CLIENT_CERT,
-        CLIENT_KEY,
-    )
+    # 1. Automatically loads the  installed ca.crt from the Linux system store
+    ssl_context = ssl.create_default_context()
 
-    for file in required_files:
-        if not file.exists():
-            raise FileNotFoundError(f"TLS file not found: {file}")
-
-    ssl_context = ssl.create_default_context(
-        cafile=str(CA_CERT),
-    )
+    # 2. Keep these local as files, as Python on Linux cannot fetch 
+    # client private keys out of a system-wide store natively.
+    if not CLIENT_CERT.exists() or not CLIENT_KEY.exists():
+        raise FileNotFoundError("Client certificate or key file is missing.")
 
     ssl_context.load_cert_chain(
         certfile=str(CLIENT_CERT),
@@ -56,6 +44,7 @@ def create_ssl_context() -> ssl.SSLContext:
     )
 
     return ssl_context
+
 
 
 async def main() -> None:
